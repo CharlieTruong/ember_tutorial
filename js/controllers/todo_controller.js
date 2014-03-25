@@ -18,7 +18,13 @@ Todos.TodoController = Ember.ObjectController.extend({
         var todo = this.get('model');
         todo.deleteRecord();
         todo.save();
-    }
+    }, 
+
+    clearCompleted: function() {
+       var completed = this.filterBy('isCompleted', true);
+       completed.invoke('deleteRecord');
+       completed.invoke('save');
+     }
    },
 
   isEditing: false,
@@ -35,5 +41,13 @@ Todos.TodoController = Ember.ObjectController.extend({
       model.save();
       return value;
     }
-  }.property('model.isCompleted')
+  }.property('model.isCompleted'),
+
+  hasCompleted: function() {
+    return this.get('completed') > 0;
+  }.property('completed'),
+
+  completed: function() {
+    return this.filterBy('isCompleted', true).get('length');
+  }.property('@each.isCompleted')
 });
